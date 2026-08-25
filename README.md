@@ -7,6 +7,11 @@ Custom-designed chassis, 3D-printed rack-and-pinion sweep mechanism, ESP32
 firmware, and a metal detector that had to be physically modified before it
 could talk to a microcontroller at all.
 
+[![firmware tests](https://github.com/Kunz5/mine-rover-x/actions/workflows/firmware-tests.yml/badge.svg)](https://github.com/Kunz5/mine-rover-x/actions/workflows/firmware-tests.yml)
+[![platform](https://img.shields.io/badge/platform-ESP32-e7352c)](https://www.espressif.com/en/products/socs/esp32)
+[![tests](https://img.shields.io/badge/host%20tests-42-2ea043)](test/)
+[![license](https://img.shields.io/badge/license-MIT-8b949e)](LICENSE)
+
 ![3D-printed parts](docs/images/printed-parts.png)
 
 *Above: the printed parts of the detector sweep mechanism, rendered from the
