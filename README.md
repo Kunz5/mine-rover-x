@@ -9,6 +9,10 @@ could talk to a microcontroller at all.
 
 ![3D-printed parts](docs/images/printed-parts.png)
 
+*Above: the printed parts of the detector sweep mechanism, rendered from the
+STL sources in [`hardware/cad/`](hardware/cad/). Photographs of the assembled
+rover are pending.*
+
 ---
 
 ## The problem
@@ -104,6 +108,35 @@ emergency stop.
 
 **Full diagnosis: [`docs/firmware-postmortem.md`](docs/firmware-postmortem.md).**
 
+### The v3 state machine
+
+Commands set *intent*. State is derived from the sensors on every 20 ms control
+tick — never assigned by the command handler. That separation is the fix for the
+bug the test suite caught.
+
+```mermaid
+stateDiagram-v2
+    [*] --> IDLE: boot, motors DISARMED
+    IDLE --> DRIVING: F / B / L / R once ARMed
+    DRIVING --> IDLE: S, or command timeout after 1.2 s
+    DRIVING --> OBSTACLE_HOLD: range falls to 15 cm
+    OBSTACLE_HOLD --> IDLE: range rises past 22 cm
+    OBSTACLE_HOLD --> DRIVING: reverse or turn still permitted
+    DRIVING --> TARGET_FOUND: alarm sustained 2 s
+    IDLE --> TARGET_FOUND: alarm sustained 2 s
+    TARGET_FOUND --> IDLE: CLEAR acknowledges
+    IDLE --> ESTOP: ESTOP
+    DRIVING --> ESTOP: ESTOP
+    OBSTACLE_HOLD --> ESTOP: ESTOP
+    ESTOP --> IDLE: CLEAR, then ARM
+```
+
+The 15 cm stop and 22 cm resume are deliberately different. A single threshold
+made the rover chatter in and out of the hold at the boundary; the gap between
+them is hysteresis.
+
+
+
 ---
 
 ## Problem 3 — testing embedded code without a board
@@ -161,7 +194,48 @@ ESP32 DOIT DevKit V1 · L298N dual H-bridge · 4x N20 gear motors · HC-SR04
 ultrasonic · IR obstacle module · metal detector module (buzzer line tapped) ·
 SG90 servo · 1-channel relay · 18650 pack
 
-Full pin map, wiring notes and power warnings: [`hardware/BOM.md`](hardware/BOM.md).
+```mermaid
+flowchart LR
+    subgraph POWER["Power"]
+        BAT["18650 pack"]
+    end
+
+    subgraph SENSE["Sensing"]
+        MD["Metal detector<br/>buzzer terminal tapped"]
+        US["HC-SR04<br/>ultrasonic"]
+        IR["IR obstacle<br/>module"]
+    end
+
+    subgraph BRAIN["Controller"]
+        ESP["ESP32 DOIT DevKit V1<br/>240 MHz"]
+    end
+
+    subgraph ACT["Actuation"]
+        L298["L298N<br/>dual H-bridge"]
+        MOT["4x N20 gear motors<br/>tank steering"]
+        SRV["SG90 servo<br/>rack and pinion"]
+        MK["Marker drop"]
+    end
+
+    HOST["Host laptop<br/>USB serial 115200"]
+
+    BAT --> L298
+    BAT --> ESP
+    MD -->|"GPIO 34 · audio waveform<br/>interrupt on CHANGE"| ESP
+    US -->|"TRIG 17 / ECHO 16"| ESP
+    IR -->|"GPIO 4 · active LOW"| ESP
+    ESP -->|"ENA 27 · IN1 26 · IN2 25<br/>ENB 5 · IN3 18 · IN4 19"| L298
+    L298 --> MOT
+    ESP -->|"GPIO 13 · 50 Hz PWM"| SRV
+    SRV --> MK
+    ESP <-->|"commands / 4 Hz CSV telemetry"| HOST
+```
+
+> **Power note.** The ESP32 must not be run from the L298N's 5 V regulator while
+> the motors are loaded — the rail sags on current spikes and the ESP32 browns
+> out mid-command. Separate the supplies and tie the grounds.
+
+Full pin map and power warnings: [`hardware/BOM.md`](hardware/BOM.md).
 
 ---
 
