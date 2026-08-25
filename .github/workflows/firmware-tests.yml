@@ -1,0 +1,20 @@
+name: firmware tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  host-tests:
+    name: Run v3 control-logic tests on host
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile against stubbed Arduino HAL
+        working-directory: test
+        run: g++ -std=c++17 -Wall -I. -o test_v3 test_v3.cpp
+      - name: Run test suite
+        working-directory: test
+        run: ./test_v3
