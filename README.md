@@ -12,11 +12,24 @@ could talk to a microcontroller at all.
 [![tests](https://img.shields.io/badge/host%20tests-42-2ea043)](test/)
 [![license](https://img.shields.io/badge/license-MIT-8b949e)](LICENSE)
 
+![The rover](docs/images/rover-detail.jpg)
+
+*The assembled rover, shown at the MAKERSPACE MS 101 exhibition. Visible: the
+laser-cut acrylic chassis, 3D-printed wheel hubs, the blue printed rack and the
+servo that drives it, the HC-SR04 ultrasonic module on the front edge, and the
+ESP32 stack above.* **The metal detector head is not fitted in these
+photographs** *— they were taken with the platform running its obstacle-avoidance
+firmware.*
+
+![Rack and pinion detail](docs/images/rover-mechanism.jpg)
+
+*The rack-and-pinion sweep mechanism, printed in blue: the toothed vertical rack
+and the servo housing at its base. The CAD sources are in
+[`hardware/cad/rack-and-pinion/`](hardware/cad/rack-and-pinion/).*
+
 ![3D-printed parts](docs/images/printed-parts.png)
 
-*Above: the printed parts of the detector sweep mechanism, rendered from the
-STL sources in [`hardware/cad/`](hardware/cad/). Photographs of the assembled
-rover are pending.*
+*The printed parts, rendered directly from the STL sources.*
 
 ---
 
@@ -269,7 +282,9 @@ T,<ms>,<state>,<range_cm>,<speed>,<detect>,<edges>,<ir>
 ## Status — what is and isn't true
 
 - The rover is **built and has driven** under `firmware/v2_baseline/`.
-- The detector buzzer tap is **physically done and works**.
+- The detector buzzer tap is **physically done and works** — though it is not
+  fitted in the photographs above, which show the platform running its
+  obstacle-avoidance firmware at an exhibition.
 - `firmware/v3/` is **fully tested on host but has not yet been flashed to the
   rover.** Everything above about v3 describes verified logic, not verified
   field behaviour.
