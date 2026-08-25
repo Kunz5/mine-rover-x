@@ -310,3 +310,15 @@ hardware/BOM.md         parts, pin map, power notes
 hardware/cad/           chassis, rack-and-pinion, dumper mechanism sources
 docs/firmware-postmortem.md   what was wrong with v2 and why it mattered
 ```
+
+---
+
+## Timeline
+
+The rover was designed and built in **June 2025** — the chassis and sweep
+mechanism in Fusion 360, the v2 firmware that drove it, and the buzzer-line tap
+on the detector.
+
+Firmware v3, the host test harness, and this documentation were written in
+**August 2026**, when the project was cleaned up and published. The v2 source in
+`firmware/v2_baseline/` is unmodified from the original build.
