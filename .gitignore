@@ -1,0 +1,7 @@
+test/test_v3
+test/*.o
+*.exe
+build/
+.vscode/
+.DS_Store
+Thumbs.db
