@@ -337,3 +337,7 @@ on the detector.
 Firmware v3, the host test harness, and this documentation were written in
 **August 2026**, when the project was cleaned up and published. The v2 source in
 `firmware/v2_baseline/` is unmodified from the original build.
+
+---
+
+*Kunaal Nirmal Khanwani · built June 2025 at the IIT Bombay Makerspace workshop, published August 2026 · MIT licensed.*
